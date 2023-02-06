@@ -7,13 +7,32 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    /// <summary>
+    /// Returns singleton instance
+    /// </summary>
+    /// <returns></returns>
     public static GameManager Instance() => _instance;
     private static GameManager _instance;
 
+    /// <summary>
+    /// Game over UI object
+    /// </summary>
     public GameObject gameover;
+    /// <summary>
+    /// Hazard Prefab
+    /// </summary>
     public GameObject hazard;
+    /// <summary>
+    /// Award Prefab
+    /// </summary>
     public GameObject award;
+    /// <summary>
+    /// Player Game object
+    /// </summary>
     public GameObject player;
+    /// <summary>
+    /// Score counter Prefab
+    /// </summary>
     public GameObject counter;
 
     void Start()
@@ -29,28 +48,40 @@ public class GameManager : MonoBehaviour
         GameReset();
     }
 
+    /// <summary>
+    /// Score
+    /// </summary>
     private int score;
     //private int timer;
+    /// <summary>
+    /// Spawn timer until the next one spawns
+    /// </summary>
     private int spawnTimer;
+    /// <summary>
+    /// Last hazard spawn position
+    /// </summary>
     private float lastHazardX;
 
+    /// <summary>
+    /// Resets/Initializes game status
+    /// </summary>
     public void GameReset()
     {
         score = 0;
         //timer = 0;
         spawnTimer = 100; // grace time before spawning first hazard
-        lastHazardX = 0f;
-        gameover.SetActive(false);
-        Time.timeScale = 1f;
-        RequestNewAward();
+        lastHazardX = 0f; // also grace spot so the first hazard won't spawn above player spawn
+        gameover.SetActive(false); // hide game over ui
+        Time.timeScale = 1f; // reset timescale
+        RequestNewAward(); // spawn first award
     }
 
     void FixedUpdate()
     {
-        if (gameover.activeSelf) return; // stop game process
+        if (gameover.activeSelf) return; // if game over, stop game process
         //timer++;
-        spawnTimer--;
-        if (spawnTimer < 1)
+        spawnTimer--; // ticks down spawn timer
+        if (spawnTimer < 1) // spawn timer hits 0: spawn new hazard
         {
             spawnTimer = 40 - Mathf.FloorToInt(35 * Mathf.Clamp01(score / 64f));
             // difficulty scale with score: the more score you get, the faster hazard spawns
@@ -59,20 +90,27 @@ public class GameManager : MonoBehaviour
             do
             {
                 x = Random.Range(-8.4f, 8.4f);
-            } while (Mathf.Abs(x - lastHazardX) < 2f); // avoid spawning hazards too close
+            } while (Mathf.Abs(x - lastHazardX) < 2f); // avoid spawning hazards too close to previous one
             lastHazardX = x; // save this hazard pos
             _h.transform.position = new Vector3(x, 5.7f, -1f); // position hazard on random x pos
+            // z is in front of everything so hazards never gets obscured
         }
     }
 
+    /// <summary>
+    /// Adds score
+    /// </summary>
     public void AddScore(int i)
     {
         score += i;
     }
 
+    /// <summary>
+    /// Create new award instance
+    /// </summary>
     public void RequestNewAward()
     {
-        float x, y = Random.Range(-2f, 2f);
+        float x, y = Random.Range(-2f, 2f); // y position randomized, so each award require different jump
         do
         {
             x = Random.Range(-8.4f, 8.4f);
@@ -91,7 +129,7 @@ public class GameManager : MonoBehaviour
         while (i < score)
         {
             int x = i % 33, y = i / 33;
-            if (score < 32) x += (32 - score) / 2; // centre
+            if (score < 32) x += (32 - score) / 2; // rough centring
             var _c = Instantiate(counter);
             _c.name = "count " + (i + 1);
             _c.transform.SetParent(gameover.transform);
@@ -99,7 +137,7 @@ public class GameManager : MonoBehaviour
             i++;
         }
 
-        Time.timeScale = 0f;
+        Time.timeScale = 0f; // time stop
     }
 
 }

@@ -10,11 +10,11 @@ public class OnMouseDown_SceneChange : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Z)) // pressing jump key also triggers next scene
             SceneManager.LoadScene(scene);
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR // in Standalone build,
         if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
+            Application.Quit(); // pressing ESC quits the game if this UI is visible
 #endif
     }
 

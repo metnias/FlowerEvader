@@ -20,7 +20,7 @@ public class Award_Swing : MonoBehaviour
     void Update()
     {
         timer++;
-        float rot = Mathf.Sin(timer * swingSpeed) * swingAmount;
+        float rot = Mathf.Sin(timer * swingSpeed) * swingAmount; // uses Sin function for swing motion
         spr.transform.rotation = Quaternion.Euler(0f, 0f, rot);
     }
 }

@@ -32,7 +32,9 @@ public class Move_Platformer : MonoBehaviour
         #region Jump
         if (Input.GetKey(KeyCode.Z))
         {
-            if (!lastJumpPressed) wantToJump = 5;// set grace jump timer
+            if (!lastJumpPressed) wantToJump = 5;
+            // set grace jump timer: this allows pressing jump just before touching ground doesn't get ignored.
+            // also compensates wacky Unity physics
             lastJumpPressed = true;
         }
         else lastJumpPressed = false;
@@ -73,7 +75,8 @@ public class Move_Platformer : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Block")
-            && rb.velocity.y > 0f) // if this is moving up
+            && rb.velocity.y > 0f) // if the player is moving up:
+            // this check prevents player getting "off the ground" just by moving horizontally
         {
             grounded = false;
         }
