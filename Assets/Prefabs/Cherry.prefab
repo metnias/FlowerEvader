@@ -128,5 +128,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b936e7ce2577634f862fbc42655914a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swingSpeed: 0.06
+  swingSpeed: 0.2
   swingAmount: 10
