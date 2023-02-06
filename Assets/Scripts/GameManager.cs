@@ -35,6 +35,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public GameObject counter;
 
+    /// <summary>
+    /// Delay after the last award is eaten
+    /// </summary>
+    public float awardDelay = 1f;
+
     void Start()
     {
         if (_instance == null)
@@ -110,6 +115,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RequestNewAward()
     {
+        Invoke("SpawnNewAward", awardDelay);
+    }
+
+    private void SpawnNewAward()
+    {
         float x, y = Random.Range(-2f, 2f); // y position randomized, so each award require different jump
         do
         {
@@ -133,7 +143,7 @@ public class GameManager : MonoBehaviour
             var _c = Instantiate(counter);
             _c.name = "count " + (i + 1);
             _c.transform.SetParent(gameover.transform);
-            _c.transform.position = new Vector3(-8f + x * 0.5f, 2f + y * 0.5f, 0f);
+            _c.transform.position = new Vector3(-8f + x * 0.5f, 2f - y * 0.5f, 0f);
             i++;
         }
 
